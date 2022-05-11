@@ -2,6 +2,9 @@ import "@nomiclabs/hardhat-etherscan";
 import "@nomiclabs/hardhat-waffle";
 import "@typechain/hardhat";
 import { config as dotenvConfig } from "dotenv";
+import { ethers } from "ethers";
+import "hardhat-contract-sizer";
+import "hardhat-docgen";
 import "hardhat-gas-reporter";
 import { HardhatUserConfig } from "hardhat/config";
 import { NetworkUserConfig } from "hardhat/types";
@@ -22,6 +25,18 @@ if (!mnemonic) {
 const infuraApiKey: string | undefined = process.env.INFURA_API_KEY;
 if (!infuraApiKey) {
   throw new Error("Please set your INFURA_API_KEY in a .env file");
+}
+const alchemyApiKey: string | undefined = process.env.ALCHEMY_API_KEY;
+if (!alchemyApiKey) {
+  throw new Error("Please set your ALCHEMY_API_KEY in a .env file");
+}
+const runStressTests: string | undefined = process.env.RUN_STRESS_TESTS;
+if (!runStressTests) {
+  throw new Error("Please set your RUN_STRESS_TESTS in a .env file");
+}
+const runDocgen: string | undefined = process.env.RUN_DOCGEN;
+if (!runDocgen) {
+  throw new Error("Please set your RUN_DOCGEN in a .env file");
 }
 
 const chainIds = {
@@ -45,6 +60,9 @@ function getChainConfig(chain: keyof typeof chainIds): NetworkUserConfig {
     case "bsc":
       jsonRpcUrl = "https://bsc-dataseed1.binance.org";
       break;
+    case "polygon-mumbai":
+      jsonRpcUrl = "https://polygon-mumbai.g.alchemy.com/v2/" + alchemyApiKey;
+      break;
     default:
       jsonRpcUrl = "https://" + chain + ".infura.io/v3/" + infuraApiKey;
   }
@@ -54,10 +72,16 @@ function getChainConfig(chain: keyof typeof chainIds): NetworkUserConfig {
       : ["0x0000000000000000000000000000000000000000"],
     chainId: chainIds[chain],
     url: jsonRpcUrl,
+    gasPrice: ethers.utils.parseUnits("60", "gwei").toNumber(),
   };
 }
 
 const config: HardhatUserConfig = {
+  docgen: {
+    path: "./docgen",
+    runOnCompile: process.env.RUN_DOCGEN == "TRUE" ? true : false,
+  },
+
   defaultNetwork: "hardhat",
   etherscan: {
     apiKey: {
@@ -73,7 +97,7 @@ const config: HardhatUserConfig = {
   },
   gasReporter: {
     currency: "USD",
-    enabled: process.env.REPORT_GAS ? true : false,
+    enabled: true,
     excludeContracts: [],
     src: "./contracts",
   },
@@ -84,6 +108,7 @@ const config: HardhatUserConfig = {
       },
       chainId: chainIds.hardhat,
     },
+
     arbitrum: getChainConfig("arbitrum-mainnet"),
     avalanche: getChainConfig("avalanche"),
     bsc: getChainConfig("bsc"),

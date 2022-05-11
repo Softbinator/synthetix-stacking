@@ -1,5 +1,7 @@
 # directories
+.vscode
 .yarn/*
+.husky/*
 !.yarn/patches
 !.yarn/releases
 !.yarn/plugins
@@ -23,9 +25,13 @@ coverage.json
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+yarn.lock
+soljson-*.js
+.DS_Store
 
 # types
 src/types/*
+typechain/*
 !src/types/common.ts
 !src/types/Greeter.ts
 
