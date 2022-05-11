@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.13;
 
-import "hardhat/console.sol";
-
 /**
  * @notice Interface used to interact with a token created by us
  */
