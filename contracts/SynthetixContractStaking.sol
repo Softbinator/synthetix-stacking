@@ -67,6 +67,9 @@ contract SynthetixContractStaking {
     /// @notice Error for announcing that the address requesting withdraw doesn't have the requested amount
     error InsufficientFunds();
 
+    /// @notice Error for announcing that the contract doesn't have the requested amount in totalSuply
+    error InsufficientFundsInContract();
+
     constructor(SynthetixTokenInterface _synthetix) {
         token = _synthetix;
     }
@@ -133,15 +136,15 @@ contract SynthetixContractStaking {
 
     /**
      * @notice Withdrawing an amount of tokens from the contract
-     * @param _amount represents amount of tokens
+     * @param _amount represents the amount of tokens
      */
     function withdraw(uint256 _amount) external updateReward(msg.sender) {
         if (_amount > _balances[msg.sender]) {
             revert InsufficientFunds();
         }
-        // if (_amount > _totalSuply){
-        // revert InsufficientFundsInContract();  // ar trb tratat?
-        // }
+        if (_amount > _totalSuply) {
+            revert InsufficientFundsInContract();
+        }
         _totalSuply -= _amount;
         _balances[msg.sender] -= _amount;
         emit Withdraw(_amount);
