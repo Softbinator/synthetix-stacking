@@ -20,7 +20,7 @@ interface SynthetixTokenInterface {
  * @author Softbinator Technologies
  * @notice This Contract is build after Synthetix Staking Contract
  * @dev Formula is: R * k * ( ∑( 1 / L(t)) < with t = 0, t -> b >  -  ∑( 1 / L(t)) < with t = 0, t -> a-1 > )
- * @dev Where R = reward rate; k = staked amount (constant); L(t) = total suply at the moment t;
+ * @dev Where R = reward rate; k = staked amount (constant); L(t) = total supply at the moment t;
  * @dev a = the moment from we start calculating the reward; b = the moment when we stop calculating the reward
  * @dev ∑( 1 / L(t)) < with t = 0, t -> b > is represented by rewardPerTokenStored
  * @dev ∑( 1 / L(t)) < with t = 0, t -> a-1 > is represented by userRewardPerTokenPaid and is specific for each address
@@ -39,8 +39,8 @@ contract SynthetixContractStaking {
     /// @notice In this specific contract the user gets the reward at 1 sec
     uint256 public rewardRate = 10;
 
-    /// @notice Total suply of the contract
-    uint256 private _totalSuply;
+    /// @notice Total supply of the contract
+    uint256 private _totalSupply;
 
     /// @notice Mapping to know the balance of each address
     mapping(address => uint256) private _balances;
@@ -67,7 +67,7 @@ contract SynthetixContractStaking {
     /// @notice Error for announcing that the address requesting withdraw doesn't have the requested amount
     error InsufficientFunds();
 
-    /// @notice Error for announcing that the contract doesn't have the requested amount in totalSuply
+    /// @notice Error for announcing that the contract doesn't have the requested amount in totalSupply
     error InsufficientFundsInContract();
 
     constructor(SynthetixTokenInterface _synthetix) {
@@ -88,11 +88,11 @@ contract SynthetixContractStaking {
      * @dev Represents the first termen of the difference between the 2 sums from the formula
      */
     function rewardPerToken() public view returns (uint256) {
-        if (_totalSuply == 0) {
+        if (_totalSupply == 0) {
             return 0;
         }
 
-        return rewardPerTokenStored + ((rewardRate * (block.timestamp - lastUpdateTime) * 1e18) / _totalSuply);
+        return rewardPerTokenStored + ((rewardRate * (block.timestamp - lastUpdateTime) * 1e18) / _totalSupply);
     }
 
     /**
@@ -128,7 +128,7 @@ contract SynthetixContractStaking {
      * @dev To not revert, the contract should have allowance from the msg.sender >= then the _amount
      */
     function stake(uint256 _amount) external updateReward(msg.sender) {
-        _totalSuply += _amount;
+        _totalSupply += _amount;
         _balances[msg.sender] += _amount;
         emit Stake(_amount);
         token.transferFrom(msg.sender, address(this), _amount);
@@ -142,10 +142,10 @@ contract SynthetixContractStaking {
         if (_amount > _balances[msg.sender]) {
             revert InsufficientFunds();
         }
-        if (_amount > _totalSuply) {
+        if (_amount > _totalSupply) {
             revert InsufficientFundsInContract();
         }
-        _totalSuply -= _amount;
+        _totalSupply -= _amount;
         _balances[msg.sender] -= _amount;
         emit Withdraw(_amount);
         token.transfer(msg.sender, _amount);
