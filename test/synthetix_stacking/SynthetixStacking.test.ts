@@ -255,6 +255,6 @@ describe("Synthetix Staking Tests", function () {
 
     reward += (timestampAfterWithUser - timestampAfterWithdrawBob) * 10;
 
-    await expect(SynthetixStaking.getReward()).to.emit(SynthetixStaking, "GetReward").withArgs(reward); //  5 * 10 + 10(ca mai trece o secunda) + 5 * 4
+    await expect(SynthetixStaking.getReward()).to.emit(SynthetixStaking, "GetReward").withArgs(reward);
   });
 });
