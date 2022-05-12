@@ -35,7 +35,7 @@ contract SynthetixContractStaking {
     /// @notice Last time when the somebody made a stake, withdraw or getReward
     uint256 public lastUpdateTime;
 
-    /// @notice The reward that an address will get on a eriod of time
+    /// @notice The reward that an address will get on a period of time
     /// @notice In this specific contract the user gets the reward at 1 sec
     uint256 public rewardRate = 10;
 
@@ -70,7 +70,16 @@ contract SynthetixContractStaking {
     /// @notice Error for announcing that the contract doesn't have the requested amount in totalSupply
     error InsufficientFundsInContract();
 
+    /// @notice Error for announcing that the given token address is Address Zero
+    error InvalidAddressForToken();
+
+    /// @notice Error for announcing that the given address is Address Zero
+    error InvalidAddress();
+
     constructor(SynthetixTokenInterface _synthetix) {
+        if (_synthetix == SynthetixTokenInterface(address(0))) {
+            revert InvalidAddressForToken();
+        }
         token = _synthetix;
     }
 
@@ -79,6 +88,9 @@ contract SynthetixContractStaking {
      * @param _token represents the new token address
      */
     function setToken(SynthetixTokenInterface _token) external {
+        if (_token == SynthetixTokenInterface(address(0))) {
+            revert InvalidAddressForToken();
+        }
         token = _token;
         emit SetTokenAddress(_token);
     }
@@ -100,6 +112,9 @@ contract SynthetixContractStaking {
      * @param _account represents the address on which the reward is calculated
      */
     function earned(address _account) public view returns (uint256) {
+        if (_account == address(0)) {
+            revert InvalidAddress();
+        }
         uint256 rewardPerTokenValue = rewardPerToken();
         if (rewardPerTokenValue == 0) {
             return rewards[_account];

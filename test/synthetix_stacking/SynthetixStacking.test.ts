@@ -36,6 +36,29 @@ describe("Synthetix Staking Tests", function () {
     expect(await SynthetixStaking.token()).to.be.equal(STHX.address);
   });
 
+  it("Deploys with address 0 as token address", async () => {
+    await expect(SynthetixStakingFactory.deploy(ethers.constants.AddressZero)).to.be.revertedWith(
+      "InvalidAddressForToken()",
+    );
+  });
+
+  it("Set token address", async () => {
+    const STHX2: SynthetixToken = await SynthetixTokenFactory.deploy("SynthetixToken2", "STHX2");
+    await expect(SynthetixStaking.setToken(STHX2.address))
+      .to.emit(SynthetixStaking, "SetTokenAddress")
+      .withArgs(STHX2.address);
+  });
+
+  it("Set token address to adress(0)", async () => {
+    await expect(SynthetixStaking.setToken(ethers.constants.AddressZero)).to.be.revertedWith(
+      "InvalidAddressForToken()",
+    );
+  });
+
+  it("Address 0 earned calculation", async () => {
+    await expect(SynthetixStaking.earned(ethers.constants.AddressZero)).to.be.revertedWith("InvalidAddress()");
+  });
+
   it("Stake", async () => {
     await STHX.approve(SynthetixStaking.address, "100000000000000");
     await STHX.mint(user.address, "1000");
