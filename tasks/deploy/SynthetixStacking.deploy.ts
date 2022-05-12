@@ -8,7 +8,7 @@ task("deploy:SynthetixContractStaking").setAction(async function (taskArguments:
     await ethers.getContractFactory("SynthetixContractStaking")
   );
   const SynthetixContractStaking: SynthetixContractStaking = <SynthetixContractStaking>(
-    await SynthetixContractStakingFactory.deploy("0xe2f33B6852338C5997fA6f66B4fBd8eBe29e4652")
+    await SynthetixContractStakingFactory.deploy("0xeb8E5594AC476d025A6b841Be37bC30a8e94278e") // address of an already deployed token
   );
   await SynthetixContractStaking.deployed();
   console.log("SynthetixContractStaking deployed to: ", SynthetixContractStaking.address);
