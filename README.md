@@ -78,12 +78,12 @@ Deploy the contracts to Rinkeby Network:
 
 Token Contract
 ```sh
-$ npx hardhat deploy:SynthetixToken --network rinkeby <name of token> <symbol of token>
+$ npx hardhat deploy:SynthetixToken --network rinkeby
 ```
 
 Stacking Contract
 ```sh
-$ npx hardhat deploy:SynthetixContractStaking --network rinkeby <address of token>
+$ npx hardhat deploy:SynthetixContractStaking --network rinkeby
 ```
 
 
