@@ -104,3 +104,8 @@ $ npx hardhat verify <address_of_the_deployed_stacking_contract> --network rinke
 ## Syntax Highlighting
 
 If you use VSCode, you can enjoy syntax highlighting for your Solidity code via the [hardhat-vscode](https://github.com/NomicFoundation/hardhat-vscode) extension.
+
+
+# DISCLAIMER
+
+These contracts are not audited, use at your own risk!
